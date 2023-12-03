@@ -133,7 +133,6 @@ def klikkausfunktio(x, y, hiiren_painike, muokkaustoiminto):
     
     print(f"Klikkaus: x={x}, y={y}, painike={hiiren_painike}, muokkaustoiminto={muokkaustoiminto}")
 
-
     if hiiren_painikkeet == "vasen":
         if kentan_miinat["kentta"][y][x] == "x":
             if pelikentta["kentta"][y][x] != "f":
@@ -149,13 +148,14 @@ def klikkausfunktio(x, y, hiiren_painike, muokkaustoiminto):
                 miinoita(kentan_miinat["kentta"], sanakirja["miinat"], (x, y))
                 sanakirja["eka_klik"] = False
 
-            tulvataytto(kentan_miinat["kentta"], y, x)
+            tulvataytto(pelikentta["kentta"],kentan_miinat["kentta"], y, x)
             ha.aseta_piirto_kasittelija(piirra_kentta)
-            sanakirja["muuvit"] += 1
             if not sanakirja["vapaat"]:
                 sanakirja["lopputulos"] = "Voitto"
                 sanakirja["lopetus"] = True
                 print("Voitit pelin, hienosti haravoitu!")
+
+
 
     if hiiren_painikkeet == "oikea":
 
@@ -174,7 +174,7 @@ def paljasta_miinat():
                 pelikentta["kentta"][y][x] = "x"
 
 
-def tulvataytto(kentta, y, x):
+def tulvataytto(kentta,kenttan_miinat, y, x):
     """
     Tarkistaa onko klikatun kohdan ympärillä miinoja ja paljastaa lähialueen tyhjät kohdat.
     """
@@ -190,7 +190,7 @@ def tulvataytto(kentta, y, x):
                     uusi_x = x + x_1
                     uusi_y = y + y_1
                     if 0 <= uusi_x < leveys and 0 <= uusi_y < pituus:
-                        if kentta[uusi_y][uusi_x] == "x":
+                        if kenttan_miinat[uusi_y][uusi_x] == "x":
                             vierus_miinat_lkm += 1
 
             if vierus_miinat_lkm == 0:
@@ -200,7 +200,7 @@ def tulvataytto(kentta, y, x):
                         uusi_x = x + x_1
                         uusi_y = y + y_1
                         if 0 <= uusi_x < leveys and 0 <= uusi_y < pituus:
-                            if kentta[uusi_y][uusi_x] == " " and (uusi_y, uusi_x) not in alku_lista:
+                            if kenttan_miinat[uusi_y][uusi_x] == " " and (uusi_y, uusi_x) not in alku_lista:
                                 alku_lista.append((uusi_y, uusi_x))
             else:
                 kentta[y][x] = str(vierus_miinat_lkm)
@@ -215,9 +215,11 @@ def piirra_kentta():
     ha.piirra_tausta()
     ha.aloita_ruutujen_piirto()
 
+    # print(pelikentta["kentta"])
     for j in range(len(pelikentta["kentta"])):
         for i, avain in enumerate(pelikentta["kentta"][j]):
             ha.lisaa_piirrettava_ruutu(avain, i * 40, j * 40)
+            
             
     
     
